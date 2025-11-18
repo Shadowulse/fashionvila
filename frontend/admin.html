@@ -83,6 +83,11 @@
     const addForm = document.getElementById('add-product-form');
     const imageInput = document.getElementById('productImage');
 
+    // ✅ FIXED: Dynamic API URL that works everywhere
+    const API_BASE = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000' 
+      : window.location.origin;
+
     // --- 1. Load all products on page load ---
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts();
@@ -90,7 +95,7 @@
 
     async function loadProducts() {
       try {
-        const response = await fetch('http://localhost:3000/api/products');
+        const response = await fetch(`${API_BASE}/api/products`);
         const products = await response.json();
         productList.innerHTML = '';
         
@@ -102,10 +107,10 @@
         products.forEach(product => {
           const productEl = document.createElement('div');
           productEl.className = 'flex items-center justify-between p-4 border rounded-lg';
-          // Now we show the image!
+          // ✅ FIXED: Dynamic image URLs
           productEl.innerHTML = `
             <div class="flex items-center gap-4">
-              <img src="http://localhost:3000/${product.imagePath}" alt="${product.name}" class="w-16 h-16 rounded-md object-cover">
+              <img src="${API_BASE}/${product.imagePath}" alt="${product.name}" class="w-16 h-16 rounded-md object-cover">
               <div>
                 <h3 class="text-lg font-semibold">${product.name}</h3>
                 <p class="text-sm text-gray-600">${product.category} - Ksh ${product.price}</p>
@@ -117,11 +122,11 @@
         });
       } catch (error) {
         console.error('Error loading products:', error);
-        productList.innerHTML = '<p class="text-red-500">Failed to load products.</p>';
+        productList.innerHTML = '<p class="text-red-500">Failed to load products. Make sure your backend is running.</p>';
       }
     }
 
-    // --- 2. Handle the "Add Product" form submission (NOW USES FORMDATA) ---
+    // --- 2. Handle the "Add Product" form submission ---
     addForm.addEventListener('submit', async (e) => {
       e.preventDefault(); 
       
@@ -132,12 +137,13 @@
       formData.append('price', document.getElementById('price').value);
       formData.append('description', document.getElementById('description').value);
       formData.append('defaultSize', document.getElementById('defaultSize').value);
-      formData.append('productImage', imageInput.files[0]); // The file itself
+      formData.append('productImage', imageInput.files[0]);
 
       try {
-        const response = await fetch('http://localhost:3000/api/products', {
+        // ✅ FIXED: Dynamic API URL
+        const response = await fetch(`${API_BASE}/api/products`, {
           method: 'POST',
-          body: formData // No 'Content-Type' header, browser sets it for FormData
+          body: formData
         });
 
         if (!response.ok) {
@@ -150,17 +156,18 @@
         
       } catch (error) {
         console.error('Error adding product:', error);
-        alert('Error: Could not add product.');
+        alert('Error: Could not add product. Make sure your backend is running.');
       }
     });
 
-    // --- 3. Handle deleting a product (Same as before) ---
+    // --- 3. Handle deleting a product ---
     async function deleteProduct(productId) {
       if (!confirm('Are you sure you want to delete this product?')) {
         return; 
       }
       try {
-        const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
+        // ✅ FIXED: Dynamic API URL
+        const response = await fetch(`${API_BASE}/api/products/${productId}`, {
           method: 'DELETE'
         });
         if (!response.ok) {
@@ -170,7 +177,7 @@
         alert('Product deleted successfully!');
       } catch (error) {
         console.error('Error deleting product:', error);
-        alert('Error: Could not delete product.');
+        alert('Error: Could not delete product. Make sure your backend is running.');
       }
     }
   </script>
