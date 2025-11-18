@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel - Fashion Villa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand-terracotta: #c44536; --brand-slate: #0c0d0ece; }
+    body { font-family: "Inter", sans-serif; background-color: #f0efee; }
+    input, select, textarea {
+      border: 1px solid #ccc; padding: 0.5rem 0.75rem; border-radius: 0.5rem;
+      width: 100%; transition: all 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--brand-terracotta);
+      box-shadow: 0 0 0 2px rgba(196, 69, 54, 0.3);
+      outline: none;
+    }
+    .btn-primary {
+      background-color: var(--brand-terracotta); color: white; font-weight: 600;
+      padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary:hover { background-color: #a8372b; }
+    .btn-delete {
+      background-color: #ef4444; color: white; font-weight: 500;
+      padding: 0.25rem 0.75rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-delete:hover { background-color: #dc2626; }
+  </style>
+</head>
+<body class="p-8">
+
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8" style="color: var(--brand-terracotta);">Fashion Villa Admin Panel</h1>
+
+    <div class="bg-white p-8 rounded-xl shadow-lg mb-12">
+      <h2 class="text-2xl font-bold mb-6" style="color: var(--brand-slate);">Add New Product</h2>
+      
+      <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+          <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <input type="text" id="category" name="category" placeholder="e.g., Formal Shirts" required>
+        </div>
+        <div>
+          <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price (Ksh)</label>
+          <input type="number" id="price" name="price" required>
+        </div>
+        
+        <div>
+          <label for="productImage" class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+          <input type="file" id="productImage" name="productImage" accept="image/*" required>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea id="description" name="description" rows="3"></textarea>
+        </div>
+        <div>
+          <label for="defaultSize" class="block text-sm font-medium text-gray-700 mb-1">Default Size</label>
+          <input type="text" id="defaultSize" name="defaultSize" value="M" required>
+        </div>
+        <div class="md:col-span-2 text-right">
+          <button type="submit" class="btn-primary">Add Product</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white p-8 rounded-xl shadow-lg">
+      <h2 class="text-2xl font-bold mb-6" style="color: var(--brand-slate);">Current Products</h2>
+      <div id="current-products-list" class="space-y-4">
+        <p>Loading products...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const productList = document.getElementById('current-products-list');
+    const addForm = document.getElementById('add-product-form');
+    const imageInput = document.getElementById('productImage');
+
+    // --- 1. Load all products on page load ---
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProducts();
+    });
+
+    async function loadProducts() {
+      try {
+        const response = await fetch('http://localhost:3000/api/products');
+        const products = await response.json();
+        productList.innerHTML = '';
+        
+        if (products.length === 0) {
+          productList.innerHTML = '<p>No products found.</p>';
+          return;
+        }
+        
+        products.forEach(product => {
+          const productEl = document.createElement('div');
+          productEl.className = 'flex items-center justify-between p-4 border rounded-lg';
+          // Now we show the image!
+          productEl.innerHTML = `
+            <div class="flex items-center gap-4">
+              <img src="http://localhost:3000/${product.imagePath}" alt="${product.name}" class="w-16 h-16 rounded-md object-cover">
+              <div>
+                <h3 class="text-lg font-semibold">${product.name}</h3>
+                <p class="text-sm text-gray-600">${product.category} - Ksh ${product.price}</p>
+              </div>
+            </div>
+            <button class="btn-delete" onclick="deleteProduct('${product.id}')">Delete</button>
+          `;
+          productList.appendChild(productEl);
+        });
+      } catch (error) {
+        console.error('Error loading products:', error);
+        productList.innerHTML = '<p class="text-red-500">Failed to load products.</p>';
+      }
+    }
+
+    // --- 2. Handle the "Add Product" form submission (NOW USES FORMDATA) ---
+    addForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); 
+      
+      // Use FormData to send file and text
+      const formData = new FormData();
+      formData.append('name', document.getElementById('name').value);
+      formData.append('category', document.getElementById('category').value);
+      formData.append('price', document.getElementById('price').value);
+      formData.append('description', document.getElementById('description').value);
+      formData.append('defaultSize', document.getElementById('defaultSize').value);
+      formData.append('productImage', imageInput.files[0]); // The file itself
+
+      try {
+        const response = await fetch('http://localhost:3000/api/products', {
+          method: 'POST',
+          body: formData // No 'Content-Type' header, browser sets it for FormData
+        });
+
+        if (!response.ok) {
+          throw new Error('Server failed to add product.');
+        }
+
+        addForm.reset(); 
+        loadProducts(); 
+        alert('Product added successfully!');
+        
+      } catch (error) {
+        console.error('Error adding product:', error);
+        alert('Error: Could not add product.');
+      }
+    });
+
+    // --- 3. Handle deleting a product (Same as before) ---
+    async function deleteProduct(productId) {
+      if (!confirm('Are you sure you want to delete this product?')) {
+        return; 
+      }
+      try {
+        const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) {
+          throw new Error('Server failed to delete product.');
+        }
+        loadProducts(); 
+        alert('Product deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('Error: Could not delete product.');
+      }
+    }
+  </script>
+
+</body>
+</html>

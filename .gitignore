@@ -1,0 +1,20 @@
+﻿# Node modules
+node_modules/
+my-backend/node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Uploads folder (exclude product images to keep repo small)
+my-backend/uploads/

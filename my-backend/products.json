@@ -1,0 +1,90 @@
+[
+  {
+    "id": "prod_1763331090477",
+    "name": "Men's Red Parrot Print Tropical Shirt",
+    "category": "Hawaiian Shirts",
+    "price": 900,
+    "description": "A vibrant, vacation-ready shirt in a bold red. Features a classic all-over tropical print with purple parrots and green palm leaves, complete with a camp collar and chest pocket.",
+    "defaultSize": "M",
+    "imagePath": "/uploads/productImage-1763331090432.jpeg",
+    "rating": 0,
+    "reviews": []
+  },
+  {
+    "id": "prod_1763331164337",
+    "name": "Men's Black Tropical Parrot Print Shirt",
+    "category": "Hawaiian Shirts",
+    "price": 900,
+    "description": "Make a statement with this classic black button-down. It features a lively all-over tropical print of colorful parrots, cockatoos, and lush palm leaves, finished with a relaxed camp collar.",
+    "defaultSize": "M",
+    "imagePath": "/uploads/productImage-1763331164307.jpeg",
+    "rating": 0,
+    "reviews": []
+  },
+  {
+    "id": "prod_1763331230149",
+    "name": "Men's Red & White Hibiscus Print Shirt",
+    "category": "Hawaiian Shirts",
+    "price": 900,
+    "description": "A classic vacation-style shirt featuring a high-contrast, two-tone design. This bold red button-down is covered in a white hibiscus flower and palm leaf print, perfect for a standout tropical look.",
+    "defaultSize": "M",
+    "imagePath": "/uploads/productImage-1763331230131.jpeg",
+    "rating": 0,
+    "reviews": []
+  },
+  {
+    "id": "prod_1763360371175",
+    "name": "Men's Brown & Black Vertical Stripe Shirt",
+    "category": "Printed Shirts",
+    "price": 900,
+    "description": "A smart-casual button-down featuring a clean vertical stripe pattern in brown, black, and white. Designed with a classic collar and short sleeves for a sharp, modern look.",
+    "defaultSize": "M",
+    "imagePath": "/uploads/productImage-1763360371105.jpeg",
+    "rating": 0,
+    "reviews": []
+  },
+  {
+    "id": "prod_1763360453794",
+    "name": "Men's Red Hot Rod Graphic Shirt",
+    "category": "Printed Shirts",
+    "price": 900,
+    "description": "A high-octane button-down shirt featuring a vibrant, all-over graphic print. Includes a classic red muscle car with flames, a checkerboard pattern, and mechanic-style wrench graphics on a red brick background.",
+    "defaultSize": "M",
+    "imagePath": "/uploads/productImage-1763360453673.jpeg",
+    "rating": 0,
+    "reviews": []
+  },
+  {
+    "id": "prod_1763371379690",
+    "name": "Men's \"Extreme\" Graffiti Print Shirt",
+    "category": "Printed Shirts",
+    "price": 900,
+    "description": "Short Description: A modern casual shirt with a dynamic, all-over abstract print. This white button-down features graffiti-style \"Extreme\" text and geometric shapes in black, grey, and tan for a bold, streetwear-inspired look.",
+    "defaultSize": "M",
+    "imagePath": "uploads\\productImage-1763371379623.jpeg",
+    "rating": 0,
+    "reviews": []
+  },
+  {
+    "id": "prod_1763371483636",
+    "name": "Men's Navy & Red Stripe Silky Shirt",
+    "category": "Printed Shirts",
+    "price": 900,
+    "description": "A premium button-down shirt with a smooth, silky finish. Features a bold vertical stripe pattern in red and green against a dark navy background, complete with a relaxed camp collar and chest pocket.",
+    "defaultSize": "M",
+    "imagePath": "uploads\\productImage-1763371483622.jpeg",
+    "rating": 0,
+    "reviews": []
+  },
+  {
+    "id": "prod_1763371639702",
+    "name": "Men's Retro Colorblock Panel Shirt",
+    "category": "Printed Shirts",
+    "price": 900,
+    "description": "A vintage-style button-down shirt featuring a bold colorblock design. This black shirt has a classic camp collar and a striking central panel in blue and white.",
+    "defaultSize": "M",
+    "imagePath": "uploads\\productImage-1763371639665.jpeg",
+    "rating": 0,
+    "reviews": []
+  }
+]

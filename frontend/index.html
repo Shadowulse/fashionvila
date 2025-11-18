@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fashion Villa — Luxury Men's Boutique</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand-cream: #f0efee; --brand-sand: #f8f6f5e7; --brand-terracotta: #c44536;
+      --brand-olive: #e5ac8a; --brand-slate: #0c0d0ece;
+    }
+    body { 
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+      background: linear-gradient(135deg, var(--brand-cream) 0%, var(--brand-sand) 100%);
+      color: var(--brand-slate); min-height: 100vh;
+      scroll-behavior: smooth; overflow-x: hidden;
+    }
+    h1,h2,h3 { font-family: "Playfair Display", serif; }
+    .glass { 
+      background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); 
+      border: 1px solid rgba(255, 255, 255, 0.2); 
+    }
+    .terracotta { color: var(--brand-terracotta); }
+    .olive { color: var(--brand-olive); }
+    .slate { color: var(--brand-slate); }
+    .product-card { 
+      transition: all 0.3s ease; background: rgb(226, 222, 220);
+    }
+    .product-card:hover { 
+      transform: translateY(-6px) scale(1.02); 
+      box-shadow: 0 20px 40px rgba(196, 69, 54, 0.15); 
+      border: 1px solid var(--brand-terracotta);
+    }
+    .product-card img {
+      width: 100%; height: 16rem;
+      object-fit: cover;
+    }
+    .focus-ring:focus { 
+      outline: 2px solid rgba(196, 69, 54, 0.35); outline-offset: 2px; 
+    }
+    .nav-group { position: relative; }
+    .nav-dropdown {
+      position: absolute; top: 100%; left: 0; margin-top: 0.5rem;
+      background: rgba(252, 250, 249, 0.95); backdrop-filter: blur(20px);
+      border: 1px solid rgba(196, 69, 54, 0.2); border-radius: 1rem;
+      padding: 1rem; min-width: 200px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      z-index: 100; opacity: 0; visibility: hidden;
+      transform: translateY(-10px); transition: all 0.3s ease;
+    }
+    .nav-group:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+    .nav-dropdown a, .nav-dropdown button {
+      display: block; width: 100%; text-align: left; padding: 0.75rem 1rem;
+      border-radius: 0.5rem; transition: all 0.2s ease;
+      color: var(--brand-slate); text-decoration: none;
+    }
+    .nav-dropdown a:hover, .nav-dropdown button:hover {
+      background: rgba(196, 69, 54, 0.1); transform: translateX(5px);
+      color: var(--brand-terracotta);
+    }
+    .sub-dropdown {
+      position: absolute; left: 100%; top: 0; margin-left: 0.5rem;
+      background: rgba(240, 236, 233, 0.95); backdrop-filter: blur(20px);
+      border: 1px solid rgba(196, 69, 54, 0.2); border-radius: 1rem;
+      padding: 1rem; min-width: 180px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      z-index: 101; opacity: 0; visibility: hidden;
+      transform: translateX(-10px); transition: all 0.3s ease;
+    }
+    .sub-group:hover .sub-dropdown { opacity: 1; visibility: visible; transform: translateX(0); }
+    #floatingCart { 
+      position: fixed; top: 16%; right: 0; width: 320px; max-width: 320px;
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+      border-radius: 1rem 0 0 1rem; padding: 1.5rem;
+      box-shadow: -5px 10px 30px rgba(0,0,0,0.1); z-index: 50;
+      transform: translateX(100%); transition: transform 0.3s ease;
+      border: 1px solid rgba(196, 69, 54, 0.2);
+      max-height: 70vh; overflow-y: auto;
+    }
+    #cartToggle { 
+      position: fixed; top: 16%; right: 1rem; width: 3.5rem; height: 3.5rem;
+      background: var(--brand-terracotta); color: white;
+      font-weight: bold; border-radius: 9999px; display: flex;
+      align-items: center; justify-content: center; z-index: 55;
+      cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;
+    }
+    #cartToggle:hover { background: #a8372b; transform: scale(1.1); }
+    .cart-badge {
+      position: absolute; top: -5px; right: -5px; background: var(--brand-olive);
+      color: white; border-radius: 50%; width: 20px; height: 20px;
+      font-size: 12px; display: flex; align-items: center; justify-content: center;
+    }
+    .payment-method {
+      transition: all 0.3s ease; background: rgb(206, 201, 198);
+    }
+    .payment-method:hover {
+      transform: scale(1.05); border-color: var(--brand-terracotta);
+      box-shadow: 0 10px 30px rgba(196, 69, 54, 0.1);
+    }
+    .category-section { scroll-margin-top: 100px; }
+    .mobile-dropdown {
+      background: rgba(243, 141, 73, 0.95); backdrop-filter: blur(20px);
+    }
+    .star-rating { color: #f59e0b; }
+    .star-rating-empty { color: #d1d5db; }
+    
+    /* Improved visibility styles */
+    .cta-button {
+      background: var(--brand-terracotta);
+      color: white;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(196, 69, 54, 0.3);
+      border: none;
+      cursor: pointer;
+    }
+    .cta-button:hover {
+      background: #a8372b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(196, 69, 54, 0.4);
+    }
+    .highlight-text {
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .help-button {
+      background: var(--brand-olive);
+      color: var(--brand-slate);
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(229, 172, 138, 0.3);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    .help-button:hover {
+      background: #d89c7a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(229, 172, 138, 0.4);
+    }
+    
+    /* Notification styles */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .notification.success {
+      background: #10b981;
+    }
+    
+    .notification.error {
+      background: #ef4444;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Loading animation for images */
+    .image-loading {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Your existing HTML structure remains the same -->
+  <header class="w-full glass border-b border-slate/10 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="h-14 w-14 rounded-full glass shadow-md flex items-center justify-center border border-terracotta/20">
+          <span class="text-xl font-bold terracotta">FV</span>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold tracking-tight terracotta">Fashion Villa</h1>
+          <p class="text-sm text-slate/70 -mt-1">Luxury Men's Wear · Timeless</p>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm relative">
+        <!-- Navigation items remain the same -->
+        <div class="nav-group relative">
+          <button class="hover:text-terracotta font-semibold transition-colors slate nav-trigger">Shirts ▾</button>
+          <div class="nav-dropdown">
+            <a href="#formal-shirts" class="slate">Formal Shirts</a>
+            <div class="relative sub-group mt-2">
+              <button class="slate w-full text-left">Casual Shirts ▸</button>
+              <div class="sub-dropdown">
+                <a href="#flannel-shirts" class="slate">Flannel Shirts</a>
+                <a href="#hawaiian-shirts" class="slate">Hawaiian Shirts</a>
+                <a href="#printed-shirts" class="slate">Printed Shirts</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-group relative">
+          <button class="hover:text-terracotta font-semibold transition-colors slate nav-trigger">T-Shirts ▾</button>
+          <div class="nav-dropdown">
+            <a href="#graphic-tees" class="slate">Graphic Tees</a>
+            <a href="#plain-tees" class="slate">Plain Tees</a>
+            <a href="#oversized-tees" class="slate">Oversized Tees</a>
+          </div>
+        </div>
+        <div class="nav-group relative">
+          <button class="hover:text-terracotta font-semibold transition-colors slate nav-trigger">Trousers ▾</button>
+          <div class="nav-dropdown">
+            <a href="#slim-fit-trousers" class="slate">Slim Fit</a>
+            <a href="#denim" class="slate">Denim</a>
+          </div>
+        </div>
+        <div class="nav-group relative">
+          <button class="hover:text-terracotta font-semibold transition-colors slate nav-trigger">Blazers ▾</button>
+          <div class="nav-dropdown">
+            <a href="#classic-blazers" class="slate">Classic</a>
+            <a href="#modern-blazers" class="slate">Modern Fit</a>
+            <a href="#velvet-blazers" class="slate">Velvet</a>
+          </div>
+        </div>
+        <a href="#collections" class="hover:text-terracotta transition-colors slate">Collections</a>
+        <a href="#story" class="hover:text-terracotta transition-colors slate">Our Story</a>
+        <a href="#contact" class="hover:text-terracotta transition-colors slate">Contact</a>
+        <button onclick="openWhatsAppPrompt()" class="px-4 py-2 rounded-full glass text-slate/90 hover:bg-terracotta/10 transition-all border border-terracotta/20">
+          💬 WhatsApp Info
+        </button>
+      </nav>
+      <div class="md:hidden">
+        <details class="relative">
+          <summary class="list-none p-2 rounded-full glass focus-ring cursor-pointer w-10 h-10 flex items-center justify-center border border-terracotta/20">☰</summary>
+          <div class="absolute right-0 mt-2 w-64 mobile-dropdown rounded-xl p-4 flex flex-col gap-3 text-sm z-50 shadow-xl border border-terracotta/20">
+            <!-- Mobile menu items remain the same -->
+            <a href="#formal-shirts" class="hover:text-terracotta slate">Formal Shirts</a>
+            <a href="#flannel-shirts" class="hover:text-terracotta slate">Flannel Shirts</a>
+            <a href="#hawaiian-shirts" class="hover:text-terracotta slate">Hawaiian Shirts</a>
+            <a href="#printed-shirts" class="hover:text-terracotta slate">Printed Shirts</a>
+            <a href="#graphic-tees" class="hover:text-terracotta slate">Graphic Tees</a>
+            <a href="#plain-tees" class="hover:text-terracotta slate">Plain Tees</a>
+            <a href="#oversized-tees" class="hover:text-terracotta slate">Oversized Tees</a>
+            <a href="#slim-fit-trousers" class="hover:text-terracotta slate">Slim Fit Trousers</a>
+            <a href="#denim" class="hover:text-terracotta slate">Denim</a>
+            <a href="#classic-blazers" class="hover:text-terracotta slate">Classic Blazers</a>
+            <a href="#modern-blazers" class="hover:text-terracotta slate">Modern Blazers</a>
+            <a href="#velvet-blazers" class="hover:text-terracotta slate">Velvet Blazers</a>
+            <a href="#story" class="hover:text-terracotta slate">Our Story</a>
+            <a href="#contact" class="hover:text-terracotta slate">Contact</a>
+            <button onclick="openWhatsAppPrompt()" class="text-left hover:text-terracotta slate">💬 WhatsApp Info</button>
+          </div>
+        </details>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content flex-1">
+    <section class="w-full py-16 md:py-24 text-center">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl md:text-6xl font-bold mb-6 terracotta">Elevate Your Style</h2>
+        <p class="text-xl md:text-2xl text-slate/90 max-w-2xl mx-auto mb-8">
+          Discover our exclusive collection of luxury men's fashion, crafted for the modern gentleman.
+        </p>
+        <a href="#collections" class="cta-button inline-block">
+          Shop Now
+        </a>
+      </div>
+    </section>
+
+    <section id="collections" class="w-full py-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center terracotta">Featured Collections</h2>
+        <div id="product-list-container" class="space-y-16">
+          <p class="text-center text-slate/70">Loading our collections...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rest of your sections remain the same -->
+    <section class="w-full py-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center terracotta">Payment Methods</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="payment-method rounded-2xl p-8 border border-slate/10 shadow-lg text-center">
+            <div class="text-4xl mb-4">📱</div>
+            <h3 class="text-xl font-bold mb-4 slate">M-Pesa</h3>
+            <p class="text-slate/70 mb-4">Pay instantly via M-Pesa</p>
+            <div class="bg-terracotta/10 rounded-lg p-4 mb-4">
+              <p class="text-slate font-mono">Paybill: 247247</p>
+              <p class="text-slate font-mono">Account: 1093933</p>
+            </div>
+            <button onclick="copyMpesaDetails()" class="px-6 py-3 rounded-full bg-terracotta hover:bg-terracotta/80 transition-colors text-white font-semibold">
+              Copy Details
+            </button>
+          </div>
+          
+          <div class="payment-method rounded-2xl p-8 border border-slate/10 shadow-lg text-center">
+            <div class="text-4xl mb-4">💬</div>
+            <h3 class="text-xl font-bold mb-4 slate">WhatsApp Order</h3>
+            <p class="text-slate/70 mb-4">Order via WhatsApp for personalized service</p>
+            <button onclick="openWhatsAppPrompt()" class="px-6 py-3 rounded-full bg-olive hover:bg-olive/80 transition-colors slate font-semibold">
+              Order on WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="w-full py-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center terracotta">Contact Us</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="glass rounded-2xl p-8 border border-terracotta/10">
+            <h3 class="text-xl font-bold mb-4 slate">Get in Touch</h3>
+            <p class="text-slate/70 mb-4">📍 Nairobi, Kenya</p>
+            <p class="text-slate/70 mb-4">📞 +254 792 665 130</p>
+            <p class="text-slate/70 mb-4">✉️ info@fashionvilla.com</p>
+          </div>
+          <div class="glass rounded-2xl p-8 border border-terracotta/10">
+            <h3 class="text-xl font-bold mb-4 slate highlight-text">Need Help?</h3>
+            <p class="text-slate/70 mb-4">Our fashion consultants are ready to help you choose the perfect outfit</p>
+            <button onclick="openWhatsAppPrompt()" class="help-button w-full">
+              💬 <span class="highlight-text">Chat with Us on WhatsApp</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="floatingCart">
+    <h2 class="text-2xl font-bold mb-4 terracotta">Your Cart</h2>
+    <ul id="floatingCartItems" class="mb-4"></ul>
+    <p class="text-slate/90 font-semibold mb-4" id="floatingCartTotal">Total: Ksh 0</p>
+    
+    <div class="space-y-3 mb-4">
+      <button onclick="checkoutMpesa()" class="w-full px-6 py-3 rounded-full bg-olive hover:bg-olive/80 transition-colors slate font-semibold">
+        Pay with M-Pesa
+      </button>
+      <button onclick="checkoutWhatsApp()" class="w-full px-6 py-3 rounded-full bg-terracotta hover:bg-terracotta/80 transition-colors text-white font-semibold">
+        Order via WhatsApp
+      </button>
+    </div>
+  </div>
+  
+  <div id="cartToggle">
+    🛒 <div id="cartBadge" class="cart-badge hidden">0</div>
+  </div>
+
+  <footer class="w-full glass border-t border-slate/10 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <p class="text-slate/70">&copy; 2024 Fashion Villa. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // FIXED: Updated sample products with correct image paths
+    const sampleProducts = [
+      {
+        id: 1,
+        name: "Classic White Shirt",
+        price: 2499,
+        category: "Formal Shirts",
+        description: "Premium cotton formal shirt for the modern gentleman",
+        defaultSize: "M",
+        rating: 4.5,
+        imagePath: "/uploads/white-shirt.jpg"
+      },
+      {
+        id: 2,
+        name: "Slim Fit Denim Jeans",
+        price: 3499,
+        category: "Denim",
+        description: "Comfortable slim fit jeans with premium denim",
+        defaultSize: "32",
+        rating: 4.3,
+        imagePath: "/uploads/denim-jeans.jpg"
+      },
+      {
+        id: 3,
+        name: "Graphic Tee - Urban",
+        price: 1299,
+        category: "Graphic Tees",
+        description: "Casual graphic t-shirt with urban design",
+        defaultSize: "L",
+        rating: 4.7,
+        imagePath: "/uploads/graphic-tee.jpg"
+      },
+      {
+        id: 4,
+        name: "Classic Blazer",
+        price: 5999,
+        category: "Classic Blazers",
+        description: "Elegant classic blazer for formal occasions",
+        defaultSize: "M",
+        rating: 4.8,
+        imagePath: "/uploads/classic-blazer.jpg"
+      },
+      {
+        id: 5,
+        name: "Flannel Shirt",
+        price: 2799,
+        category: "Flannel Shirts",
+        description: "Warm and comfortable flannel shirt",
+        defaultSize: "L",
+        rating: 4.4,
+        imagePath: "/uploads/flannel-shirt.jpg"
+      },
+      {
+        id: 6,
+        name: "Velvet Blazer",
+        price: 6999,
+        category: "Velvet Blazers",
+        description: "Luxurious velvet blazer for special events",
+        defaultSize: "M",
+        rating: 4.9,
+        imagePath: "/uploads/velvet-blazer.jpg"
+      }
+    ];
+
+    // --- Cart functionality (unchanged) ---
+    const floatingCart = document.getElementById('floatingCart');
+    const floatingCartItems = document.getElementById('floatingCartItems');
+    const floatingCartTotal = document.getElementById('floatingCartTotal');
+    const cartToggle = document.getElementById('cartToggle');
+    const cartBadge = document.getElementById('cartBadge');
+
+    let cart = JSON.parse(localStorage.getItem('fashionVillaCart')) || [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateFloatingCart();
+      loadProducts();
+    });
+
+    cartToggle.addEventListener('click', () => {
+      if(floatingCart.style.transform === 'translateX(0%)') {
+        floatingCart.style.transform = 'translateX(100%)';
+      } else {
+        floatingCart.style.transform = 'translateX(0%)';
+      }
+    });
+
+    function addToCart(name, price, size = 'M', qty = 1){
+      console.log('Adding to cart:', {name, price, size, qty});
+      
+      const existingItem = cart.find(item => item.name === name && item.size === size);
+      
+      if (existingItem) {
+        existingItem.qty += qty;
+      } else {
+        cart.push({
+          name: name,
+          price: parseFloat(price),
+          size: size,
+          qty: parseInt(qty)
+        });
+      }
+      
+      updateFloatingCart();
+      saveCartToStorage();
+      
+      floatingCart.style.transform = 'translateX(0%)';
+      setTimeout(() => {
+        if(floatingCart.style.transform === 'translateX(0%)') {
+          floatingCart.style.transform = 'translateX(100%)';
+        }
+      }, 3000);
+      
+      showNotification(`${name} added to cart!`, 'success');
+    }
+
+    function removeItem(index){
+      if (index >= 0 && index < cart.length) {
+        const removedItem = cart[index];
+        cart.splice(index, 1);
+        updateFloatingCart();
+        saveCartToStorage();
+        showNotification(`${removedItem.name} removed from cart`, 'error');
+      }
+    }
+
+    function updateFloatingCart(){
+      if (!floatingCartItems) return;
+
+      floatingCartItems.innerHTML = '';
+      let total = 0;
+      let totalItems = 0;
+      
+      if (cart.length === 0) {
+        const emptyMsg = document.createElement('li');
+        emptyMsg.className = 'text-slate/70 text-center py-4';
+        emptyMsg.textContent = 'Your cart is empty';
+        floatingCartItems.appendChild(emptyMsg);
+      } else {
+        cart.forEach((item, i) => {
+          total += item.price * item.qty;
+          totalItems += item.qty;
+          const li = document.createElement('li');
+          li.className = 'mb-3 flex justify-between items-center text-slate/85 bg-white/50 p-3 rounded-lg';
+          li.innerHTML = `
+            <div class="flex-1">
+              <div class="font-semibold">${item.name}</div>
+              <div class="text-sm text-slate/60">Size: ${item.size} · Qty: ${item.qty}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold terracotta">Ksh ${(item.price * item.qty).toLocaleString()}</span>
+              <button onclick="removeItem(${i})" class="ml-2 px-2 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold">X</button>
+            </div>
+          `;
+          floatingCartItems.appendChild(li);
+        });
+      }
+      
+      if (floatingCartTotal) {
+        floatingCartTotal.textContent = `Total: Ksh ${total.toLocaleString()}`;
+      }
+      
+      if (cartBadge) {
+        if(totalItems > 0) {
+          cartBadge.textContent = totalItems;
+          cartBadge.classList.remove('hidden');
+        } else {
+          cartBadge.classList.add('hidden');
+        }
+      }
+    }
+
+    function saveCartToStorage() {
+      localStorage.setItem('fashionVillaCart', JSON.stringify(cart));
+    }
+
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // --- Other functions (unchanged) ---
+    function openWhatsAppPrompt() {
+      const message = `Hello Fashion Villa!%0A%0AI'm interested in your collections...`;
+      window.open(`https://wa.me/254792665130?text=${message}`, "_blank");
+    }
+
+    function checkoutMpesa() {
+      if(cart.length === 0){ 
+        showNotification("Your cart is empty!", 'error');
+        return; 
+      }
+      const total = cart.reduce((sum,item) => sum + item.price * item.qty, 0);
+      alert(`M-Pesa Payment Instructions:\n\n1. Go to M-Pesa\n2. Select Lipa Na M-Pesa\n3. Enter Paybill: 247247\n4. Account: FASHIONVILLA\n5. Amount: Ksh ${total.toLocaleString()}\n\nAfter payment, send the confirmation to our WhatsApp.`);
+    }
+
+    function checkoutWhatsApp() {
+      if(cart.length === 0){ 
+        showNotification("Your cart is empty!", 'error');
+        return; 
+      }
+      const total = cart.reduce((sum,item) => sum + item.price * item.qty, 0);
+      const orderDetails = cart.map(item => 
+        `${item.name} (Size: ${item.size}, Qty: ${item.qty}) - Ksh ${(item.price * item.qty).toLocaleString()}`
+      ).join("%0A");
+      const message = `Hello Fashion Villa,%0A%0AI'd like to purchase:%0A%0A${orderDetails}%0A%0ATotal: Ksh ${total.toLocaleString()}%0A%0APlease let me know how to proceed with payment and delivery.`;
+      window.open(`https://wa.me/254792665130?text=${message}`, "_blank");
+    }
+
+    function copyMpesaDetails() {
+      const details = `Paybill: 247247\nAccount: 1093933`;
+      navigator.clipboard.writeText(details).then(() => {
+        showNotification('M-Pesa details copied to clipboard!', 'success');
+      });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // --- FIXED: Product Loading with Proper Image Handling ---
+    async function loadProducts() {
+      const container = document.getElementById('product-list-container');
+      if (!container) return;
+
+      try {
+        console.log('Loading products from API...');
+        const response = await fetch('http://localhost:3000/api/products');
+        
+        if (!response.ok) { 
+          throw new Error(`HTTP error! status: ${response.status}`); 
+        }
+        
+        const products = await response.json();
+        console.log('Products loaded from API:', products);
+        
+        displayProducts(products, container);
+        
+      } catch (error) {
+        console.error('Error loading products from API:', error);
+        console.log('Using sample products instead...');
+        displayProducts(sampleProducts, container);
+      }
+    }
+
+    function displayProducts(products, container) {
+      if (!products || products.length === 0) {
+        container.innerHTML = '<p class="text-center text-slate/70">No products available at the moment.</p>';
+        return;
+      }
+
+      const categories = {};
+      products.forEach(product => {
+        if (!categories[product.category]) {
+          categories[product.category] = [];
+        }
+        categories[product.category].push(product);
+      });
+
+      container.innerHTML = '';
+
+      for (const categoryName in categories) {
+        const productsInCategory = categories[categoryName];
+        const categoryId = categoryName.toLowerCase().replace(/ /g, '-');
+        
+        const categorySection = document.createElement('div');
+        categorySection.id = categoryId;
+        categorySection.className = 'category-section mb-16 scroll-mt-20';
+        
+        let productCardsHTML = '';
+        productsInCategory.forEach(product => {
+          productCardsHTML += createProductCard(product);
+        });
+
+        categorySection.innerHTML = `
+          <h3 class="text-2xl md:text-3xl font-bold mb-8 terracotta border-b border-terracotta/20 pb-2">${categoryName}</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            ${productCardsHTML}
+          </div>
+        `;
+        container.appendChild(categorySection);
+      }
+    }
+
+    // FIXED: This function now properly handles image URLs
+    function createProductCard(product) {
+      const safeName = product.name || 'Unnamed Product';
+      const safePrice = product.price || 0;
+      const safeSize = product.defaultSize || 'M';
+      const safeDescription = product.description || 'No description available';
+      const safeRating = product.rating || 0;
+
+      let stars = '';
+      if (safeRating === 0 || !safeRating) {
+        stars = '<span class="text-sm star-rating-empty">No reviews yet</span>';
+      } else {
+        for (let i = 0; i < 5; i++) {
+          if (i < safeRating) {
+            stars += '★';
+          } else {
+            stars += '☆';
+          }
+        }
+      }
+      
+      const escapedName = safeName.replace(/'/g, "\\'");
+      
+      // FIXED: Proper image URL construction
+      const placeholderImage = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDI1NiAyNTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiBmaWxsPSIjRjBGMEYwIi8+CjxwYXRoIGQ9Ik0xMjggMTYwQzE0NC44MzggMTYwIDE1OC40OCAxNDYuMzU4IDE1OC40OCAxMjkuNDhDMTU4LjQ4IDExMi42MDIgMTQ0LjgzOCA5OC45NiAxMjggOTguOTZDMTExLjE2MiA5OC45NiA5Ny41MiAxMTIuNjAyIDk3LjUyIDEyOS40OEM5Ny41MiAxNDYuMzU4IDExMS4xNjIgMTYwIDEyOCAxNjBaTTEyOCA2NEwxNzIgMTA0TDE3MiAyMDhINjRWMTA0TDEyOCA2NFoiIGZpbGw9IiNDQ0NDQ0MiLz4KPC9zdmc+Cg==`;
+      
+      // Build the actual image URL from your backend
+      let imageUrl = placeholderImage;
+      if (product.imagePath) {
+        if (product.imagePath.startsWith('http')) {
+          imageUrl = product.imagePath;
+        } else if (product.imagePath.startsWith('/')) {
+          imageUrl = `http://localhost:3000${product.imagePath}`;
+        } else {
+          imageUrl = `http://localhost:3000/uploads/${product.imagePath}`;
+        }
+      }
+      
+      return `
+        <div class="product-card rounded-2xl p-6 border border-slate/10 shadow-lg flex flex-col">
+          <img src="${imageUrl}" alt="${safeName}" class="rounded-xl mb-4 image-loading" 
+               onload="this.classList.remove('image-loading')"
+               onerror="this.src='${placeholderImage}'; this.classList.remove('image-loading')">
+          
+          <div class="flex-grow">
+            <h3 class="text-xl font-bold mb-2 slate">${safeName}</h3>
+            
+            <div class="star-rating mb-2" title="${safeRating} out of 5 stars">
+              ${stars}
+            </div>
+            
+            <p class="text-slate/70 mb-4">${safeDescription}</p>
+          </div>
+
+          <div class="flex justify-between items-center mt-auto">
+            <span class="text-2xl font-bold terracotta">Ksh ${safePrice.toLocaleString()}</span>
+            <button onclick="addToCart('${escapedName}', ${safePrice}, '${safeSize}', 1)" class="cta-button px-4 py-2">
+              <span class="highlight-text">Add to Cart</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Debug functions
+    window.debugCart = function() {
+      console.log('Current cart:', cart);
+      console.log('Cart in localStorage:', localStorage.getItem('fashionVillaCart'));
+    };
+
+    window.clearCart = function() {
+      cart = [];
+      updateFloatingCart();
+      saveCartToStorage();
+      showNotification('Cart cleared!', 'success');
+    };
+
+    // Test if images are loading
+    window.testImageLoading = function() {
+      console.log('Testing image loading...');
+      const images = document.querySelectorAll('img');
+      images.forEach((img, index) => {
+        console.log(`Image ${index}:`, img.src, img.complete ? '✅ Loaded' : '❌ Loading/Failed');
+      });
+    };
+  </script>
+
+</body>
+</html>
