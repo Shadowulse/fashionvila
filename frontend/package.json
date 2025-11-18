@@ -1,0 +1,16 @@
+﻿{
+  "name": "fashion-villa",
+  "version": "1.0.0",
+  "description": "Fashion Villa Luxury Men's Boutique",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "start": "npx serve . -p 3000",
+    "build": "echo 'No build step needed for static site'"
+  },
+  "dependencies": {
+    "serve": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
